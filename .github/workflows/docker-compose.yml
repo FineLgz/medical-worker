@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  scheduling-api:
+    image: scheduling-api:latest
+    ports:
+      - "5000:5000"
+    networks:
+      - sched-net
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URI=mongodb://db:27017/scheduling
+
+  frontend:
+    image: scheduling-frontend:latest
+    ports:
+      - "80:80"
+    networks:
+      - sched-net
+    depends_on:
+      - scheduling-api
+
+  db:
+    image: mongo:latest
+    networks:
+      - sched-net
+    volumes:
+      - data-volume:/data/db
+
+networks:
+  sched-net:
+    driver: bridge
+
+volumes:
+  data-volume:
